@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+  margin: 1%
+}
+h2 {
+  font-size: 12px;
+}
+img {
+  max-width: 80%;
+  border: solid 1px black;
+}
+.disp-box {
+  background-color: lightgray;
+  border: solid 1px black;
+  text-align: center;
+}
