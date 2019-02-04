@@ -8,31 +8,30 @@
   </head>
   <body>
     <header>
-      <h1>Sunrise Sunset JSON result dump</h1>
+      <h1>Sun rise and set</h1>
       <h2>from https://api.sunrise-sunset.org/json</h2>
     </header>
       <main>
-        <div class="disp-box">
-          <h3>Enter</h3>
-          <p>Latitude: <input type="text" id="latitude"></p>
-          <p>Longitude: <input type="text" id="longitude"></p>
-          <p><button type="button" id="get-sun">get times</button></p>
+        <div class="outer-box">
+          <div class="disp-box">
+            <h3>Enter location</h3>
+            <p>Latitude: <input type="text" id="latitude"></p>
+            <p>Longitude: <input type="text" id="longitude"></p>
+            <p><button type="button" id="get-sun">get times</button></p>
+          </div>
+          <div class="disp-box">
+            <p>Date: <span id="when-dt"></span></p>
+            <p>Sunrise: <span id="sunrise-tm"></span></p>
+            <p>Sunset: <span id="sunset-tm"></span></p>
+          </div>
         </div>
-        <div class="disp-box">
-          <h3>Result</h3>
-          <p>Date: <span id="when-dt"></span></p>
-          <p>Sunrise: <span id="sunrise-tm"></span></p>
-          <p>Sunset: <span id="sunset-tm"></span></p>
+        <div class="outer-box">
+          <img src="https://c.tadst.com/gfx/750w/longitude-latitude.png?1" alt="globe showing latitude and longitude">
         </div>
-        <img src="https://c.tadst.com/gfx/750w/longitude-latitude.png?1" alt="globe showing latitude and longitude">
-<!-- copied from website -->
-        <!-- <span class="wtb-ew-v1" style="width: 204px; display:inline-block"><script src="https://www.worldtimebuddy.com/clock_widget.js?h=0&bc=8BA1BB&cn=&wt=c1"></script><i><a href="https://www.worldtimebuddy.com/">World Clock</a></i><noscript><a href="https://www.worldtimebuddy.com/">World Clock</a></noscript><script>window[wtb_event_widgets.pop()].init()</script></span> -->
-<!-- copied from website -->
       </main>
       <footer>
         <div id="text-area"></div>
       </footer>
-    <script type="text/javascript" src="sunrise.js">
-    </script>
+    <script type="text/javascript" src="sunrise.js"></script>
   </body>
 </html>

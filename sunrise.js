@@ -2,11 +2,12 @@
 // Fetch some data from a public API using Fetch
 // 1/31/2109 David Churn created
 // 2/2/2019 David Churn switched this over to sunrise name.
+// 2/4/2019 David Churn changed this to generate the result.
 
 // let latitude = '39.0997265'
 // let longitude = '-94.5785667'
 
-let when = 'today'
+let when = 'today';
 let now = new Date();
 
 let latitude = document.getElementById('latitude');
@@ -62,7 +63,7 @@ getSun.addEventListener('click', function() {
 });
 
 function getTz() {
-  let timeZone = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(Date.now()/1000)}&key=get your own key`;
+  let timeZone = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(Date.now()/1000)}&key=getYourOwnKey`;
   console.log(`goole url=${timeZone}`);
 
   fetch(timeZone)
