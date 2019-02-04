@@ -62,7 +62,7 @@ getSun.addEventListener('click', function() {
 });
 
 function getTz() {
-  let timeZone = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(Date.now()/1000)}&key=AIzaSyCvSjYSBiuxwhALrP6MWDqGsOqon7p_XxM`;
+  let timeZone = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(Date.now()/1000)}&key=get your own key`;
   console.log(`goole url=${timeZone}`);
 
   fetch(timeZone)
