@@ -3,6 +3,7 @@
 // 1/31/2109 David Churn created
 // 2/2/2019 David Churn switched this over to sunrise name.
 // 2/4/2019 David Churn reworked this and ran through Debugger
+// 2/5/2019 Ian Kietzman debugged and showed how to make async function wait.
 
 // let latitude = '39.0997265'
 // let longitude = '-94.5785667'
@@ -40,19 +41,21 @@ getSun.addEventListener('click', function() {
       let adjustSec = 0;
       console.log(`respObj=${JSON.stringify(respObj)}`);
       if (respObj.status == 'OK') {
-        adjustSec = getTz(`${latitudeStr},${longitudeStr}`)
-      };
-      dataObj = {
-        sunrise: respObj.results.sunrise,
-        sunset: respObj.results.sunset,
-        adjustSec: adjustSec,
-      };
-      return dataObj;
+        return getTz(`${latitudeStr},${longitudeStr}`)
+        .then((tz) => {
+          return {
+            sunrise: respObj.results.sunrise,
+            sunset: respObj.results.sunset,
+            adjustSec: tz,
+          };
+        })
+      }
     })
     .then(function(dataObj) {
-      whenObj.innerHTML = `Date: ${Date.now().toLocaleDateString}`;
-      sunriseObj.innerHTML = `Sunrise: ${adjustTm(dataObj.sunrise, adjustSec)}`;
-      sunsetObj.innerHTML = `Sunset: ${adjustTm(dataObj.sunset, adjustSec)}`;
+      console.log(dataObj);
+      whenObj.innerHTML = `Date: ${(new Date()).toLocaleDateString()}`;
+      sunriseObj.innerHTML = `Sunrise: ${adjustTm(dataObj.sunrise, dataObj.adjustSec)}`;
+      sunsetObj.innerHTML = `Sunset: ${adjustTm(dataObj.sunset, dataObj.adjustSec)}`;
       messageObj.innerHTML = '';
     })
     .catch((err) => {
@@ -64,12 +67,12 @@ getSun.addEventListener('click', function() {
   });
 
 function getTz(whereStr) {
-  const Gkey = "anotherObsoleteKey";
+  const Gkey = "notAgain";
   const tzurl = `https://maps.googleapis.com/maps/api/timezone/json?location=${whereStr}&timestamp=${Math.floor(Date.now()/1000)}&key=${Gkey}`;
   let apiStr = 'Google';
   console.log(`${apiStr} url=${tzurl}`);
   let tzAdjSec = 0;
-  fetch(tzurl)
+  return fetch(tzurl)
     .then((response) => response.json())
     .then(function(respObj) {
       console.log(`Google response=${JSON.stringify(respObj)}`);
@@ -80,19 +83,22 @@ function getTz(whereStr) {
       //   throw an error.
         messageObj.innerHTML = JSON.stringify(respObj);
       }
+      return tzAdjSec;
     });
-  // returns zero unless delayed by debugger...
-  return tzAdjSec;
 }
 
 function adjustTm(timeStr,adjSecNbr) {
   let todayDt = new Date();
-  console.log(`timeStr=${timeStr}, adjustNbr=${adjSecNbr}`);
   let timeArr = timeStr.split(/[: ]/g);
   // adjust hours when after noon
   let adjHr = Number(timeArr[0]);
   if (timeArr[3]=='PM') {
     adjHr += 12;
+  }
+  else {
+    if (adjHr==12) {
+      adjHr=0;
+    }
   }
   todayDt.setHours(adjHr);
   todayDt.setMinutes(Number(timeArr[1]));
