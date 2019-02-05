@@ -2,79 +2,101 @@
 // Fetch some data from a public API using Fetch
 // 1/31/2109 David Churn created
 // 2/2/2019 David Churn switched this over to sunrise name.
-// 2/4/2019 David Churn changed this to generate the result.
+// 2/4/2019 David Churn reworked this and ran through Debugger
 
 // let latitude = '39.0997265'
 // let longitude = '-94.5785667'
 
-let when = 'today';
-let now = new Date();
+const when = 'today';
 
-let latitude = document.getElementById('latitude');
-let longitude = document.getElementById('longitude');
+let latitudeObj = document.getElementById('latitude');
+let longitudeObj = document.getElementById('longitude');
 let getSun = document.getElementById('get-sun');
-let whenDt = document.getElementById('when-dt');
-whenDt.innerHTML = now.toLocaleDateString();
 
-let sunriseTm = document.getElementById('sunrise-tm');
-let sunsetTm = document.getElementById('sunset-tm');
-let textArea = document.getElementById("text-area");
+let whenObj = document.getElementById('when-dt');
+let sunriseObj = document.getElementById('sunrise-tm');
+let sunsetObj = document.getElementById('sunset-tm');
+let messageObj = document.getElementById("text-area");
 
-// nested .then statements
-// fetch(url).then(function(response) {
-//   response.text().then(function(text) {
-//     textArea.innerHTML = text;
-//   });
-// });
 getSun.addEventListener('click', function() {
 // How do I refresh the date object?
-  latitude = document.getElementById('latitude').value;
-  longitude = document.getElementById('longitude').value;
+  let latitudeStr = latitudeObj.value;
+  let longitudeStr = longitudeObj.value;
 
 // The api considers zero an error.  Nudge the value if zero entered.
-  if (latitude==0) {
-    latitude+=0.000001;
+  if (latitudeStr=="0") {
+    latitudeStr="0.000001";
   };
-  if (longitude==0) {
-    longitude+=0.000001;
+  if (longitudeStr=="0") {
+    longitudeStr="0.000001";
   }
-  let url = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&date=${when}`;
-  console.log(`sunrise-sunset url=${url}`);
+  const srurl = `https://api.sunrise-sunset.org/json?lat=${latitudeStr}&lng=${longitudeStr}&date=${when}`;
+  let apiStr = 'sunrise-sunset';
+  console.log(`${apiStr} url=${srurl}`);
 //  chained .then statements
-  fetch(url)
+  fetch(srurl)
     .then((response) => response.json())
     .then(function(respObj) {
+      let adjustSec = 0;
+      console.log(`respObj=${JSON.stringify(respObj)}`);
       if (respObj.status == 'OK') {
-        sunriseTm.innerHTML = respObj.results.sunrise;
-        sunsetTm.innerHTML = respObj.results.sunset;
-        textArea.innerHTML = '';
-      }
-      else {
-        sunriseTm.innerHTML = '';
-        sunsetTm.innerHTML = '';
-        textArea.innerHTML = JSON.stringify(respObj);
-      }
+        adjustSec = getTz(`${latitudeStr},${longitudeStr}`)
+      };
+      dataObj = {
+        sunrise: respObj.results.sunrise,
+        sunset: respObj.results.sunset,
+        adjustSec: adjustSec,
+      };
+      return dataObj;
     })
-    .then( getTz()
-    )
-    .catch((response) => {
-      textArea.innerHTML = response;
+    .then(function(dataObj) {
+      whenObj.innerHTML = `Date: ${Date.now().toLocaleDateString}`;
+      sunriseObj.innerHTML = `Sunrise: ${adjustTm(dataObj.sunrise, adjustSec)}`;
+      sunsetObj.innerHTML = `Sunset: ${adjustTm(dataObj.sunset, adjustSec)}`;
+      messageObj.innerHTML = '';
+    })
+    .catch((err) => {
+      whenObj.innerHTML = '';
+      sunriseObj.innerHTML = '';
+      sunsetObj.innerHTML = '';
+      messageObj.innerHTML = `${apiStr} says ${err}`;
     });
-});
+  });
 
-function getTz() {
-  let timeZone = `https://maps.googleapis.com/maps/api/timezone/json?location=${latitude},${longitude}&timestamp=${Math.floor(Date.now()/1000)}&key=getYourOwnKey`;
-  console.log(`goole url=${timeZone}`);
-
-  fetch(timeZone)
+function getTz(whereStr) {
+  const Gkey = "AIzaSyBMrjIuChUt8HyhjHE0_nKMCkYBGlqrU8E";
+  const tzurl = `https://maps.googleapis.com/maps/api/timezone/json?location=${whereStr}&timestamp=${Math.floor(Date.now()/1000)}&key=${Gkey}`;
+  let apiStr = 'Google';
+  console.log(`${apiStr} url=${tzurl}`);
+  let tzAdjSec = 0;
+  fetch(tzurl)
     .then((response) => response.json())
     .then(function(respObj) {
+      console.log(`Google response=${JSON.stringify(respObj)}`);
       if (respObj.status == 'OK') {
-//  adjust the returned times from sunrise-sunsetTm
+        tzAdjSec = respObj.dstOffset + respObj.rawOffset;
       }
       else {
-        textArea.innerHTML = JSON.stringify(respObj);
+      //   throw an error.
+        messageObj.innerHTML = JSON.stringify(respObj);
       }
-      console.log(`Google response=${JSON.stringify(respObj)}`);
     });
+  // returns zero unless delayed by debugger...
+  return tzAdjSec;
+}
+
+function adjustTm(timeStr,adjSecNbr) {
+  let todayDt = new Date();
+  console.log(`timeStr=${timeStr}, adjustNbr=${adjSecNbr}`);
+  let timeArr = timeStr.split(/[: ]/g);
+  // adjust hours when after noon
+  let adjHr = Number(timeArr[0]);
+  if (timeArr[3]=='PM') {
+    adjHr += 12;
+  }
+  todayDt.setHours(adjHr);
+  todayDt.setMinutes(Number(timeArr[1]));
+  todayDt.setSeconds(Number(timeArr[2]));
+  let adjustDt = new Date(Date.parse(todayDt) + (adjSecNbr * 1000));
+  return adjustDt.toLocaleTimeString();
 }

@@ -8,30 +8,30 @@
   </head>
   <body>
     <header>
-      <h1>Sun rise and set</h1>
+      <h1>Sunrise and Sunset</h1>
       <h2>from https://api.sunrise-sunset.org/json</h2>
     </header>
-      <main>
-        <div class="outer-box">
-          <div class="disp-box">
-            <h3>Enter location</h3>
-            <p>Latitude: <input type="text" id="latitude"></p>
-            <p>Longitude: <input type="text" id="longitude"></p>
-            <p><button type="button" id="get-sun">get times</button></p>
-          </div>
-          <div class="disp-box">
-            <p>Date: <span id="when-dt"></span></p>
-            <p>Sunrise: <span id="sunrise-tm"></span></p>
-            <p>Sunset: <span id="sunset-tm"></span></p>
-          </div>
+    <main>
+      <div class="outer-box">
+        <div class="disp-box">
+          <h3>Enter location</h3>
+          <p>Latitude: <input type="text" id="latitude"></p>
+          <p>Longitude: <input type="text" id="longitude"></p>
+          <p><button type="button" id="get-sun">get times</button></p>
         </div>
-        <div class="outer-box">
-          <img src="https://c.tadst.com/gfx/750w/longitude-latitude.png?1" alt="globe showing latitude and longitude">
+        <div class="disp-box">
+          <h3><span id="when-dt"></span></h3>
+          <p><span id="sunrise-tm"></span></p>
+          <p><span id="sunset-tm"></span></p>
         </div>
-      </main>
-      <footer>
-        <div id="text-area"></div>
-      </footer>
+      </div>
+      <div class="outer-box">
+        <img src="https://c.tadst.com/gfx/750w/longitude-latitude.png?1" alt="globe showing latitude and longitude">
+      </div>
+    </main>
+    <footer>
+      <div id="text-area"></div>
+    </footer>
     <script type="text/javascript" src="sunrise.js"></script>
   </body>
 </html>
