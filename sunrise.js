@@ -64,7 +64,7 @@ getSun.addEventListener('click', function() {
   });
 
 function getTz(whereStr) {
-  const Gkey = "AIzaSyBMrjIuChUt8HyhjHE0_nKMCkYBGlqrU8E";
+  const Gkey = "anotherObsoleteKey";
   const tzurl = `https://maps.googleapis.com/maps/api/timezone/json?location=${whereStr}&timestamp=${Math.floor(Date.now()/1000)}&key=${Gkey}`;
   let apiStr = 'Google';
   console.log(`${apiStr} url=${tzurl}`);
